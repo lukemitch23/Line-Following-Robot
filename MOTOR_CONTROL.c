@@ -28,5 +28,9 @@ void MOTOR_CONTROL__SHARP_LEFT(void) {
 }
 
 void MOTOR_CONTROL__SHARP_RIGHT(void) {
+
+}
+
+void MOTOR_CONTROL__STOP(void) {
  
 }

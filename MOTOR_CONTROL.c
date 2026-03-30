@@ -7,20 +7,27 @@
  *
 **********************************************************************************************************************************/
 
+#include <pic18f45k40.h>
+
 #include "MOTOR_CONTROL.h"
 
-void MOTOR_CONTROL__Init(void) {};
+void MOTOR_CONTROL__Init() {
+ // Set port D to output
+ TRISD = 0x00;
+ // Set port D to 0
+ LATD = 0x00;
+}
 
-void MOTOR_CONTROL__Forwards(void) {};
+void MOTOR_CONTROL__Forwards() {
+ LATDbits.LATD0 = 1;
+ LATDbits.LATD1 = 0;
+ LATDbits.LATD2 = 1;
+ LATDbits.LATD3 = 0;
+};
 
-void MOTOR_CONTROL__Backwards(void) {};
-
-void MOTOR_CONTROL__Gentle_Left(void) {};
-
-void MOTOR_CONTROL__Gentle_Right(void) {};
-
-void MOTOR_CONTROL__Sharp_Left(void) {};
-
-void MOTOR_CONTROL__Sharp_Right(void) {};
-
-void MOTOR_CONTROL__Stop(void) {};
+void MOTOR_CONTROL__Backwards() {
+ LATDbits.LATD0 = 0;
+ LATDbits.LATD1 = 1;
+ LATDbits.LATD2 = 0;
+ LATDbits.LATD3 = 1;
+};

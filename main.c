@@ -75,16 +75,14 @@
 
 #include <xc.h>
 
-#define _XTAL_FREQ 4000000
+#define _XTAL_FREQ 4000000 
 
-#include "MOTOR_CONTROL.h"
+#include "LIGHT_CONTROL.h"
 #include <stdbool.h>
 
 /* Interrupts here */
 
 void main(){
-    MOTOR_CONTROL__Init();
-    while (true) {
-        MOTOR_CONTROL__Forwards();
-    }
+	LIGHT_CONTROL__Init();
+	LIGHT_CONTROL__Head_Lights(1);
 }

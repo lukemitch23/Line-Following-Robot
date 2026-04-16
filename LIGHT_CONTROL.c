@@ -12,17 +12,7 @@
 /* Include header file */
 #include "LIGHT_CONTROL.h"
 
-/* Include required header files */
-#include "PIN_CONFIG.h"
-#include <xc.h>
-
 void LIGHT_CONTROL__Init(void){
-	/* Set the ports for output and digital */
-    TRISA = 0;
-    ANSELA = 0;
-	TRISE = 0;
-	ANSELE = 0;
-
 	/* Initalise all the lights to off */
 	Front_Left_White(OFF);
 	Front_Right_White(OFF);
@@ -39,8 +29,8 @@ void LIGHT_CONTROL__Init(void){
 void LIGHT_CONTROL__Head_Lights(bool set){
 	Front_Left_White(set);
 	Front_Right_White(set);
-	// Back_Left_White(set);
-	// Back_Right_White(set);
+	Back_Left_White(set);
+	Back_Right_White(set);
 }
 
 
@@ -81,33 +71,13 @@ void LIGHT_CONTROL__All_Off(void){
 	Back_Right_Yellow(OFF);
 }
 
-void Front_Left_White(bool set) {
-	LATAbits.LATA0 = set;
-}
-void Front_Right_White(bool set) {
-	LATAbits.LATA2 = set;
-}
-void Back_Left_White(bool set) {
-	LATAbits.LATA5 = set;
-}
-void Back_Right_White(bool set) {
-	LATAbits.LATA5 = set;
-}
-void Back_Left_Red(bool set) {
-	LATAbits.LATA5 = set;
-}
-void Back_Right_Red(bool set) {
-	LATAbits.LATA6 = set;
-}
-void Front_Left_Yellow(bool set) {
-	LATAbits.LATA1 = set;
-}
-void Front_Right_Yellow(bool set) {
-	LATAbits.LATA3 = set;
-}
-void Back_Left_Yellow(bool set) {
-	LATAbits.LATA4 = set;
-}
-void Back_Right_Yellow(bool set) {
-	LATAbits.LATA5 = set;
-}
+void Front_Left_White(bool set);
+void Front_Right_White(bool set);
+void Back_Left_White(bool set);
+void Back_Right_White(bool set);
+void Back_Left_Red(bool set);
+void Back_Right_Red(bool set);
+void Front_Left_Yellow(bool set);
+void Front_Right_Yellow(bool set);
+void Back_Left_Yellow(bool set);
+void Back_Right_Yellow(bool set);

@@ -58,7 +58,3 @@ dkms.conf
 .idea/modules.xml
 .idea/vcs.xml
 /LFR.X
-/nbproject
-/dist
-/build
-Makefile

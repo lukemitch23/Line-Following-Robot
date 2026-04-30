@@ -7,8 +7,12 @@
  *
 **********************************************************************************************************************************/
 
-void SENSOR__Init(void){}
-void SENSOR__Read_Sensor(void){}
-void SENSOR__Process_Sensor(void){}
+#include "COMMON.h"
+#include "MOTOR_CONTROL.h"
+#include "LIGHT_CONTROL.h"
 
-bool Check_Reading(void){}
+void SENSOR__Init(void);
+void SENSOR__Read_Sensor(void);
+void SENSOR__Process_Sensor(void);
+
+bool Check_Reading(void);

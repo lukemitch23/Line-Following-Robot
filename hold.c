@@ -172,3 +172,84 @@ TRISDbits.TRISD1 = 0; // Set RD1 as output so PWM signal appears on the pin
 TRISDbits.TRISD0 = 0; // Configure RD0 as output (motor driver enable pin)
 LATD0 = 1; // Drive RD0 HIGH to enable the motor driver
 }
+
+
+// Set PWM3 (RD0) to a given duty cycle percentage (0?100)
+/*
+void PWM3_SetDuty_Percent(uint8_t percent)
+{
+    if (percent > 100) percent = 100;
+    uint8_t steps = (uint8_t)((uint16_t)percent * 250 / 100);
+    PWM3DCH = steps;
+    PWM3DCL = 0x00;
+}
+
+// Set PWM4 (RC3) to a given duty cycle percentage (0?100)
+void PWM4_SetDuty_Percent(uint8_t percent)
+{
+    if (percent > 100) percent = 100;
+    uint8_t steps = (uint8_t)((uint16_t)percent * 250 / 100);
+    PWM4DCH = steps;
+    PWM4DCL = 0x00;
+}
+*/
+
+void PWM_Init_1kHz(void)
+{
+    // --- Step 1: Disable output drivers on target pins ---
+    TRISCbits.TRISC3 = 1;
+    TRISDbits.TRISD0 = 1;
+
+    // --- Ensure pins are digital (not analog) ---
+    ANSELCbits.ANSELC3 = 0;
+    ANSELDbits.ANSELD0 = 0;
+
+    // --- Ensure PWM3, PWM4, and Timer2 peripherals are not power-gated ---
+    PMD3bits.PWM3MD = 0;
+    PMD3bits.PWM4MD = 0;
+    PMD1bits.TMR2MD = 0;   // Enable Timer2
+
+    // --- Step 2: Clear PWM control registers ---
+    PWM3CON = 0x00;
+    PWM4CON = 0x00;
+
+    // --- Step 3: Set PWM period ---
+    // Period = (T2PR + 1) * 4 * Tosc * Prescaler
+    // 1ms   = (249 + 1)  * 4 * (1/4MHz) * 4
+    // 1ms   = 250 * 1us * 4 = 1000us ?
+    T2PR = 249;
+
+    // --- Step 4: Set initial duty cycles (50%) ---
+    // 50% of 250 steps = 125. Write to DCH; DCL bits[7:6] = 0
+    PWM3DCH = 125;
+    PWM3DCL = 0x00;
+    PWM4DCH = 125;
+    PWM4DCL = 0x00;
+
+    // --- Step 5: Configure Timer2 ---
+    PIR4bits.TMR2IF = 0;    // Clear overflow flag before starting
+
+    T2CLKCON = 0x01;        // Clock source = FOSC/4 (CS[3:0] = 0001)
+                            // Required for correct PWM operation
+
+    // CKPS[2:0] = 010 ? 1:4 prescaler
+    // OUTPS[3:0] = 0000 ? 1:1 postscaler (postscaler unused for PWM freq)
+    // ON = 1 ? start timer
+    T2CON = 0b10100000;     // ON=1, CKPS=010, OUTPS=0000
+
+    // --- Step 6: Wait for first Timer2 overflow ---
+    // Ensures the first PWM output starts as a complete cycle
+    while (!PIR4bits.TMR2IF);
+
+    // --- Step 7: Route PWM outputs to pins via PPS ---
+    RD0PPS = 0x07;          // PWM3 output ? RD0
+    RC3PPS = 0x08;          // PWM4 output ? RC3
+
+    // Enable output drivers
+    TRISDbits.TRISD0 = 0;
+    TRISCbits.TRISC3 = 0;
+
+    // --- Step 8: Enable PWM modules ---
+    PWM3CON = 0x80;         // EN=1, OUT=0(read-only), POL=0 (normal)
+    PWM4CON = 0x80;
+}
